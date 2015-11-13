@@ -58,7 +58,7 @@ instance Board Board8x8 where
   a `applyMove` m = undefined
 
 instance Show Board8x8 where
-  show b = foldr (\c r -> (maybe " " ( (++" ") . show) (b `get` c)) ++ ( if fst c == 'h' then "\n" else "") ++ r) "" (coordinates b)
+  show b = foldr (\c r -> (maybe " " show (b `get` c)) ++ ( if fst c == 'h' then "\n" else "") ++ r) "" (coordinates b)
 
 setBackground :: Color -> String -> String
 setBackground c s = case c of

@@ -2,7 +2,7 @@
 import Data.Monoid
 import Data.Ord (comparing, compare)
 import Data.Function (on)
-import Data.List (intersperse, groupBy, sortBy)
+import Data.List (intersperse, intercalate, groupBy, sortBy)
 import Data.List.Split (chunksOf)
 
 import Board
@@ -16,11 +16,6 @@ class    Space a  where getSpace :: a -> Int
 instance Space A0 where getSpace = const 0
 instance Space A1 where getSpace = const 1
 instance Space A2 where getSpace = const 2
-
--- class Show a                where smartShow :: a -> String
--- instance Show String        where smartShow = id
--- instance (Show a) => Show a where smartShow = show
-
 
 data SquareColor = BlackS | WhiteS deriving (Eq)
 
@@ -50,30 +45,28 @@ completeList i d (x:xs) = x : completeList (i-1) d xs
 spaceFromSquare :: Space s => Square s a -> Int
 spaceFromSquare sq = getSpace $ (undefined :: Square s a -> s) $ sq
 
--- smartShow :: Show a => a -> String
--- smartShow (s :: String) = s
--- smartShow o             = show o
-
-toLst :: (Space s, Show a) => Square s a -> [String]
-toLst sqr@(Square e inf _) = [ chunk | chunk <- chunksOf side finalLst]
+toLst :: (Space s, Show a) => a -> Square s a -> [[a]]
+toLst d sqr@(Square e inf _) = [ chunk | chunk <- chunksOf side finalLst ]
   where space = spaceFromSquare sqr
         side = space*2 + 1
         total = side*side - 1
-        infoLst = completeList total ' ' (concatMap show inf)
-        finalLst = (\(f, r) -> f ++ show e ++ r) $ splitAt (total `div` 2) infoLst
+        infoLst = completeList total d inf
+        finalLst = (\(f, r) -> f ++ [e] ++ r) $ splitAt (total `div` 2) infoLst
 
-instance (Space s, Show a) => Show (Line s a) where
-  show (Line ss) = concat $ intersperse "\n" $ foldr1 (zipWith (++)) $ map toLst ss
+testShow (Line ss) = intercalate "\n" $ map (concat) $ foldr1 (zipWith (++)) $ map (toLst " ") ss
 
-instance (Space s, Show a) => Show (Matrix s a) where
-  show (Matrix ls) = concatMap show ls
+instance (Space s) => Show (Line s String) where
+  show (Line ss) = intercalate "\n" $ map (concat) $ foldr1 (zipWith (++)) $ map (toLst " ") ss
 
-testLine :: Line A0 String
-testLine = Line $ map (createSquare (undefined :: A0) WhiteS) ["a", "b", "c"]
+instance (Space s) => Show (Matrix s String) where
+  show (Matrix ls) = intercalate "\n" . map show $ ls
+
+testLine :: Line A1 String
+testLine = Line $ map (createSquare (undefined :: A1) WhiteS) ["a", "b", "c"]
 
 boardToMatrix :: (Board a, Space s) => a -> s -> Matrix s String
 boardToMatrix b s = Matrix
-                    $ map (Line . map (\p -> createSquare s WhiteS $ maybe "-" (getPieceRepr) (b `get` p)))
+                    $ map (Line . map (\p -> createSquare s WhiteS $ maybe " " (getPieceRepr) (b `get` p)))
                     $ groupBy ((==) `on` snd)
-                    $ sortBy (comparing snd `mappend` (flip compare `on` fst))
+                    $ sortBy ((flip compare `on` snd) `mappend` comparing fst)
                     $ coordinates b
