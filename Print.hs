@@ -53,19 +53,17 @@ toLst d sqr@(Square e inf _) = [ chunk | chunk <- chunksOf side finalLst ]
         infoLst = completeList total d inf
         finalLst = (\(f, r) -> f ++ [e] ++ r) $ splitAt (total `div` 2) infoLst
 
-testShow (Line ss) = intercalate "\n" $ map (concat) $ foldr1 (zipWith (++)) $ map (toLst " ") ss
-
 instance (Space s) => Show (Line s String) where
   show (Line ss) = intercalate "\n" $ map (concat) $ foldr1 (zipWith (++)) $ map (toLst " ") ss
 
 instance (Space s) => Show (Matrix s String) where
   show (Matrix ls) = intercalate "\n" . map show $ ls
 
-testLine :: Line A1 String
-testLine = Line $ map (createSquare (undefined :: A1) WhiteS) ["a", "b", "c"]
+instance Show Board8x8 where
+  show = show . boardToMatrix (undefined :: A0)
 
-boardToMatrix :: (Board a, Space s) => a -> s -> Matrix s String
-boardToMatrix b s = Matrix
+boardToMatrix :: (Board a, Space s) => s -> a -> Matrix s String
+boardToMatrix s b = Matrix
                     $ map (Line . map (\p -> createSquare s WhiteS $ maybe " " (getPieceRepr) (b `get` p)))
                     $ groupBy ((==) `on` snd)
                     $ sortBy ((flip compare `on` snd) `mappend` comparing fst)
