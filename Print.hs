@@ -59,12 +59,12 @@ instance (Space s) => Show (Line s String) where
 instance (Space s) => Show (Matrix s String) where
   show (Matrix ls) = intercalate "\n" . map show $ ls
 
-instance Show Board8x8 where
+instance Show (Board8x8 (Char, Int)) where
   show = show . boardToMatrix (undefined :: A0)
 
 -- TODO: add possibility to flip the change the orientation of the matrix
 --       (black pieces at the bottom for instance)
-boardToMatrix :: (Board a, Space s) => s -> a -> Matrix s String
+boardToMatrix :: (Ord x, Ord y, Board b (x,y), Space s) => s -> b (x,y) -> Matrix s String
 boardToMatrix s b = Matrix
                     $ map (Line . map (\p -> createSquare s WhiteS $ maybe " " show (b `get` p)))
                     $ groupBy ((==) `on` snd)

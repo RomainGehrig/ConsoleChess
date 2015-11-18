@@ -1,3 +1,4 @@
+{-# LANGUAGE FlexibleInstances #-}
 module Board where
 
 import qualified Data.Map as M
@@ -27,24 +28,22 @@ getPieceRepr (Piece c t) = (cget $ repr M.! t) : " "
 instance Show Piece where
   show = getPieceRepr
 
-type Pos = (Char, Int)
+class Board b p where
+  initBoard :: b p
+  coordinates :: b p -> [p] -- TODO: find more general data structure than List (Traversable, Functor, Applicative?)
+  get         :: b p -> p -> Maybe Piece
 
-class Board a where
-  initBoard :: a
-  coordinates :: a -> [Pos] -- TODO: find more general data structure than List (Traversable, Functor, Applicative?)
-  get         :: a -> Pos -> Maybe Piece
+newtype Board8x8 p = Board8x8 { getBoard :: M.Map p Piece } deriving (Eq)
 
-newtype Board8x8 = Board8x8 { getBoard :: M.Map (Char, Int) Piece } deriving (Eq)
-
-pawnLine :: Int -> Color -> [(Pos, Piece)]
+pawnLine :: Int -> Color -> [((Char, Int), Piece)]
 pawnLine l c = map (\r -> ((r,l), Piece c Pawn)) ['a'..'h']
 
-piecesLine :: Int -> Color -> [(Pos, Piece)]
+piecesLine :: Int -> Color -> [((Char, Int), Piece)]
 piecesLine l c = zipWith (\t r -> ((r,l), Piece c t))
                  [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
                  ['a'..'h']
 
-instance Board Board8x8 where
+instance Board Board8x8 (Char, Int) where
   initBoard = Board8x8 ( M.fromList $
                          piecesLine 8 Black ++
                          pawnLine 7 Black ++
