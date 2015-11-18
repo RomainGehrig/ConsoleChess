@@ -29,13 +29,13 @@ newtype Matrix s a = Matrix { getMatrix :: [Line s a] }
 createSquare :: Space s => s -> SquareColor -> a -> Square s a
 createSquare s c a = Square { element = a, infos = [], color = c }
 
-appendSquare,addSquare :: (Space s) => Square s a -> Line s a -> Line s a
-appendSquare squ l = Line $ getSquareLine l ++ [squ]
-addSquare squ l = Line $ squ : (getSquareLine l)
-
-appendLine,addLine :: Space s => Line s a -> Matrix s a -> Matrix s a
-appendLine l m = Matrix $ getMatrix m ++ [l]
-addLine l m = Matrix $ l : (getMatrix m)
+-- appendSquare,addSquare :: (Space s) => Square s a -> Line s a -> Line s a
+-- appendSquare squ l = Line $ getSquareLine l ++ [squ]
+-- addSquare squ l = Line $ squ : (getSquareLine l)
+--
+-- appendLine,addLine :: Space s => Line s a -> Matrix s a -> Matrix s a
+-- appendLine l m = Matrix $ getMatrix m ++ [l]
+-- addLine l m = Matrix $ l : (getMatrix m)
 
 completeList :: Int -> a -> [a] -> [a]
 completeList 0 _      _ = []
@@ -62,9 +62,11 @@ instance (Space s) => Show (Matrix s String) where
 instance Show Board8x8 where
   show = show . boardToMatrix (undefined :: A0)
 
+-- TODO: add possibility to flip the change the orientation of the matrix
+--       (black pieces at the bottom for instance)
 boardToMatrix :: (Board a, Space s) => s -> a -> Matrix s String
 boardToMatrix s b = Matrix
-                    $ map (Line . map (\p -> createSquare s WhiteS $ maybe " " (getPieceRepr) (b `get` p)))
+                    $ map (Line . map (\p -> createSquare s WhiteS $ maybe " " show (b `get` p)))
                     $ groupBy ((==) `on` snd)
                     $ sortBy ((flip compare `on` snd) `mappend` comparing fst)
                     $ coordinates b

@@ -28,13 +28,11 @@ instance Show Piece where
   show = getPieceRepr
 
 type Pos = (Char, Int)
-type Move = (Pos, Pos) -- Begin-End
 
 class Board a where
   initBoard :: a
-  get :: a -> Pos -> Maybe Piece
   coordinates :: a -> [Pos] -- TODO: find more general data structure than List (Traversable, Functor, Applicative?)
-  applyMove :: a -> Move -> a
+  get         :: a -> Pos -> Maybe Piece
 
 newtype Board8x8 = Board8x8 { getBoard :: M.Map (Char, Int) Piece } deriving (Eq)
 
@@ -55,7 +53,7 @@ instance Board Board8x8 where
                        )
   b `get` pos = pos `M.lookup` getBoard b
   coordinates b = [ (x,y) | y <- [8,7..1], x <- ['a'..'h'] ]
-  a `applyMove` m = undefined
+  -- a `applyMove` m = undefined
 
 -- instance Show Board8x8 where
 --   show b = foldr (\c r -> (maybe " " show (b `get` c)) ++ ( if fst c == 'h' then "\n" else "") ++ r) "" (coordinates b)
