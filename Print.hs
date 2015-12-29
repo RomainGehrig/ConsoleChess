@@ -64,7 +64,7 @@ instance Show (Board8x8 (Char, Int)) where
 
 -- TODO: add possibility to flip the change the orientation of the matrix
 --       (black pieces at the bottom for instance)
-boardToMatrix :: (Ord x, Ord y, Board b (x,y), Space s) => s -> b (x,y) -> Matrix s String
+boardToMatrix :: (Ord x, Ord y, Board b, Space s) => s -> b (x,y) -> Matrix s String
 boardToMatrix s b = Matrix
                     $ map (Line . map (\p -> createSquare s WhiteS $ maybe " " show (b `get` p)))
                     $ groupBy ((==) `on` snd)
