@@ -1,11 +1,13 @@
 {-# LANGUAGE ScopedTypeVariables, FlexibleInstances, TypeSynonymInstances #-}
+module ConsoleChess.Print where
+
 import Data.Monoid
 import Data.Ord (comparing, compare)
 import Data.Function (on)
 import Data.List (intersperse, intercalate, groupBy, sortBy)
 import Data.List.Split (chunksOf)
 
-import Board
+import ConsoleChess.Board
 
 -- | Represent the space around the "main piece" of a Square
 data A0

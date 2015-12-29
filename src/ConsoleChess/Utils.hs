@@ -1,4 +1,4 @@
-module Utils where
+module ConsoleChess.Utils where
 
 takeUntil :: (a -> Bool) -> [a] -> [a]
 takeUntil _ [] = []

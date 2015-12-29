@@ -1,13 +1,13 @@
 {-# LANGUAGE TemplateHaskell #-}
-module Moves where
+module ConsoleChess.Moves where
 
 import qualified Data.Map as M
 import Data.Maybe
 import Data.Traversable
 import Control.Lens
 
-import Board
-import Utils
+import ConsoleChess.Board
+import ConsoleChess.Utils
 
 data Move = Move { _from :: Coordinate Int, _to :: Coordinate Int }    deriving (Show,Eq)
 data PlacedPiece = PlacedPiece { _piece :: Piece, _position :: Coordinate Int }  deriving (Show,Eq)

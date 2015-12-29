@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module Board where
+module ConsoleChess.Board where
 
 import qualified Data.Map as M
 
