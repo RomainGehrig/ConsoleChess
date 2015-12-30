@@ -1,0 +1,18 @@
+* ConsoleChess
+Toy project meant to be improved as I progress in Haskell
+
+** Personal highlights for the project
+*** Use of the Lens library
+*** Use of infinite streams for the possible moves, one for each "direction" a piece can take. i.e: bishop has 4 infinite paths, each is computed until the path reaches an obstacle. It enables to provide the least amount of information to generate moves. Pawn moves are still a work in progress.
+
+** TODOs [0/5]
+*** TODO Have internal (game mechanics and computations) and external (user point of view) coordinate systems
+**** Enforced by the type system
+*** TODO Move, PlacedPiece and Game datatypes are clumpsy to use and aren't good abstactions
+**** Must be stored:
+***** history of moves
+***** current board (pieces with positions)
+***** game state (turn, castling conditions, pawn "En passant", timers)
+*** TODO Add timers for turn, game, ...
+*** TODO Support different game modes
+*** TODO Reader/writer for Portable Game Notation and Algebraic Notation
