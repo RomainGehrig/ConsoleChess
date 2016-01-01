@@ -8,12 +8,30 @@ Toy project meant to be improved as I progress in Haskell
 ** TODOs
 + Have internal (game mechanics and computations) and external (user point of view) coordinate systems
   - Enforced by the type system
-  - Internal coordinate system should be simply queryable: "get e8" or "black pawnLine" or "1st column, 3rd row from white view point" => a3, "1st column, 3rd row from black view point" => h6
+  - Internal coordinate system should be simply queryable: "get e8" or "black pawnLine" or "1st column, 3rd row from white view point" => a3, "1st column, 3rd row from black view point" => h6, "black pawn line" => x7 (don't care about x)
+
 + Move, PlacedPiece and Game datatypes are clumpsy to use and aren't good abstactions
-  - Must be stored:
+  - Abstraction opportunities
+    + Going back and forth between states (undo and redo). Would need an history that can reconstitute previous states (find captured piece, promotion). Data structure looks like Move -=> Move -=> Move (CurrentState) -=> Move -=> ... . `previousState` and `nextState` take a State and return a Maybe State, possible error: no previous/next state possible. Data structure for the Moves: Zipper.
+  - Better abstractions
+    + Turn: make it the way to store all info about the turn ? Annotations (check,...), piece move, piece, color, time, castling king/queen-side (two moves in one turn! castling is a king move). It would be the best if it is capable of being "undone" (regenerate previous game state).
+  - Must be stored
     + history of moves
-    + current board (pieces with positions)
-    + game state (turn, castling conditions, pawn "En passant", timers)
+    + captured pieces
+    + timers for each players
+    + game state snapshot
+      - board
+      - turn (Black or White)
+      - castling conditions
+      - pawn "En passant"
+      - pawn promotion
+      - check(mate)
++ Problematics:
+  - Moves that require more knowledge about the game state than "dumb" moves:
+    A solution might be to add a specialized function (called after the paths generation) that takes the current game state and handles these particular cases.
+    + Pawns are a problem as they require to know other pieces positions to generate all sensible moves
+    + Castling and "en passant" require to know the game history to generate possible moves
+  - Draw conditions also requires to know previous states to yield a draw
 + Add timers for turn, game, ...
 + Support different game modes
 + Reader/writer for Portable Game Notation and Algebraic Notation
